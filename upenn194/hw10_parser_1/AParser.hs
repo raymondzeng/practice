@@ -59,7 +59,7 @@ posInt = Parser f
 ------------------------------------------------------------
 
 instance Functor Parser where
-         fmap f p = Parser (fmap (first f) . runParser p)
+         fmap f (Parser x) = Parser (fmap (first f) . x)
 
 first :: (a -> b) -> (a,c) -> (b,c)
 first f (a, b) = (f a, b)
@@ -74,8 +74,7 @@ instance Applicative Parser where
                                                Just (x, s'') -> Just (f x, s'')
          
 abParser :: Parser (Char, Char)
-abParser = pair <$> char 'a' <*> char 'b'
-           where pair a b = (a, b)
+abParser = (,) <$> char 'a' <*> char 'b'
 
 abParser_ :: Parser ()
 abParser_ = toss <$> char 'a' <*> char 'b'
