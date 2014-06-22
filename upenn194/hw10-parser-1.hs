@@ -1,11 +1,6 @@
-{- CIS 194 HW 10
-   due Monday, 1 April
--}
-
 module AParser where
 
 import           Control.Applicative
-
 import           Data.Char
 
 -- A parser for a value of type a is a function which takes a String
@@ -59,7 +54,7 @@ posInt = Parser f
 ------------------------------------------------------------
 
 instance Functor Parser where
-         fmap f (Parser x) = Parser (fmap (first f) . x)
+         fmap f (Parser x) = Parser ((fmap (first f)) . x)
 
 first :: (a -> b) -> (a,c) -> (b,c)
 first f (a, b) = (f a, b)
