@@ -14,4 +14,4 @@ cabal.config
 *~
 
 # python
-.pyc
+*.pyc
