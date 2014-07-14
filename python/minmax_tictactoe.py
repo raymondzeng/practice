@@ -9,9 +9,10 @@ def make_board(xy):
     return board
         
 def print_board(board):
-    for col in board:
-        print " | ".join(col)            
-
+    for i in xrange(len(board)):
+        row = [board[j][i] for j in xrange(len(board))]
+        print " | ".join(row)
+        
 def new_state(old, player, (x,y)):
     import copy
     new = copy.deepcopy(old)
@@ -54,8 +55,11 @@ def score(board, you):
     return 10 if win == you else -10
     
 ai_move = None
+ai_score = 0
+
 def minmax(board, player="o", opp="x", curr_player="o"):
     global ai_move
+
     if game_over(board):
         return score(board, player)
 
@@ -67,7 +71,11 @@ def minmax(board, player="o", opp="x", curr_player="o"):
         next_state = new_state(board, curr_player, move)
         next_turn = opp if curr_player == player else player
         scores.append((minmax(next_state, player, opp, next_turn)))
-
+        
+    if len(moves) == 1:
+        print curr_player
+        print_board(board)
+        print moves, scores
     if curr_player == player:
         max_score = max(scores)
         ai_move = moves[scores.index(max_score)]
@@ -78,6 +86,14 @@ def minmax(board, player="o", opp="x", curr_player="o"):
         return min_score
 
 board = make_board(3)
+# board[0] = ["o", "_", "o"]
+# board[1] = ["o", "x", "x"]
+# board[2] = ["x", "x", "o"]
+
+# print_board(board)
+# board[0][1] = "m"
+# print_board(board)
+#minmax(board)
 print "You are X"
 print "Enter your moves as: x y"
 while(True):
@@ -125,9 +141,3 @@ while(True):
             print "Draw!"
         break
 
-
-    
-
-#### TODO : still incorrect! AI didn't block me when I was about to win
-# to recreate bug:
-# 0 2 -> 1 1
