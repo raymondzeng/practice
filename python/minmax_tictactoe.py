@@ -1,5 +1,5 @@
 # an implementation for tictactoe AI using minmax and alphabeta pruning
-# board is y x array
+# board is col row array
 
 # boards are always squares
 def make_board(xy):
@@ -51,51 +51,41 @@ def get_winner(board):
 
 # does not check that game is actually over
 # so might mistake incomplete for draw
-def score(board, you):
+def evaluate(board, you):
     win = get_winner(board)
     if win is None:
         return 0
     return 10 if win == you else -10
     
-ai_move = None
-ai_score = 0
-
-def minmax(board, player="o", opp="x", curr_player="o"):
+def minmax(board, player="o", opp="x", curr="o", lookAhead=6):
     global ai_move
 
-    if game_over(board):
-        return score(board, player)
+    if game_over(board) or lookAhead < 0:
+        score = evaluate(board, player)
+        return (score, None)
 
     d = len(board)
     moves = [(y,x) for x in xrange(d) for y in xrange(d) if board[y][x] == "_"]
     scores = []
     
     for move in moves:
-        next_state = new_state(board, curr_player, move)
-        next_turn = opp if curr_player == player else player
-        scores.append((minmax(next_state, player, opp, next_turn)))
+        next_state = new_state(board, curr, move)
+        next = opp if curr == player else player
+        score, _ = minmax(next_state, 
+                          curr=next,
+                          lookAhead=lookAhead - 1)
+        scores.append(score)
         
-    if len(moves) == 10:
-        print curr_player
-        print_board(board)
-        print moves, scores
-    if curr_player == player:
+    if curr == player:
         max_score = max(scores)
         ai_move = moves[scores.index(max_score)]
-        return max_score
+        return (max_score, ai_move)
     else:
         min_score = min(scores)
-        #ai_move = moves[scores.index(min_score)]
-        return min_score
+        return (min_score, None)
 
 board = make_board(3)
-# board[0][2] = "x"
-# board[1][1] = "x"
-# board[0][0] = "o"
-# # board[1][0] = "o"
-# # board[2][0] = "x"
-# minmax(board, curr_player="o")
-# print ai_move
+# repl to play tictactoe
 print "You are X"
 print "Enter your moves as: col row"
 while(True):
@@ -106,8 +96,8 @@ while(True):
     y, x = map(int, input.split())
     if board[y][x] != "_":
         print "Invalid move!"
-        continue
-
+        continue        
+    
     board = new_state(board, "x", (y,x))
     print
     print_board(board)
@@ -126,7 +116,7 @@ while(True):
     print 
     print "Their turn..."
     
-    minmax(board)
+    score, ai_move = minmax(board)
     print ai_move
     board = new_state(board, "o", ai_move)
     print_board(board)
