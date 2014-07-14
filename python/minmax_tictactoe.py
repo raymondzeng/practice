@@ -13,7 +13,7 @@ def print_board(board):
         row = [board[j][i] for j in xrange(len(board))]
         print " | ".join(row)
         
-def new_state(old, player, (x,y)):
+def new_state(old, player, (y,x)):
     import copy
     new = copy.deepcopy(old)
     new[y][x] = player
@@ -40,10 +40,13 @@ def get_winner(board):
         if len(set(row)) == 1 and row[0] != "_":
             return row[0]
             
-    diag = [board[i][i] for i in xrange(len(board))]
-    if len(set(diag)) == 1 and diag[0] != "_":
-        return diag[0]
+    tl_br_diag = [board[i][i] for i in xrange(d)]
+    if len(set(tl_br_diag)) == 1 and tl_br_diag[0] != "_":
+        return tl_br_diag[0]
 
+    bl_tr_diag = [board[i][j] for (i,j) in zip(reversed(xrange(d)), xrange(d))]
+    if len(set(bl_tr_diag)) == 1 and bl_tr_diag[0] != "_":
+        return bl_tr_diag[0]
     return None
 
 # does not check that game is actually over
@@ -64,7 +67,7 @@ def minmax(board, player="o", opp="x", curr_player="o"):
         return score(board, player)
 
     d = len(board)
-    moves = [(x,y) for x in xrange(d) for y in xrange(d) if board[y][x] == "_"]
+    moves = [(y,x) for x in xrange(d) for y in xrange(d) if board[y][x] == "_"]
     scores = []
     
     for move in moves:
@@ -72,7 +75,7 @@ def minmax(board, player="o", opp="x", curr_player="o"):
         next_turn = opp if curr_player == player else player
         scores.append((minmax(next_state, player, opp, next_turn)))
         
-    if len(moves) == 1:
+    if len(moves) == 10:
         print curr_player
         print_board(board)
         print moves, scores
@@ -82,31 +85,30 @@ def minmax(board, player="o", opp="x", curr_player="o"):
         return max_score
     else:
         min_score = min(scores)
-        ai_move = moves[scores.index(min_score)]
+        #ai_move = moves[scores.index(min_score)]
         return min_score
 
 board = make_board(3)
-# board[0] = ["o", "_", "o"]
-# board[1] = ["o", "x", "x"]
-# board[2] = ["x", "x", "o"]
-
-# print_board(board)
-# board[0][1] = "m"
-# print_board(board)
-#minmax(board)
+# board[0][2] = "x"
+# board[1][1] = "x"
+# board[0][0] = "o"
+# # board[1][0] = "o"
+# # board[2][0] = "x"
+# minmax(board, curr_player="o")
+# print ai_move
 print "You are X"
-print "Enter your moves as: x y"
+print "Enter your moves as: col row"
 while(True):
     print
     print "Your Turn: "
     print_board(board)
     input = raw_input()
-    x, y = map(int, input.split())
+    y, x = map(int, input.split())
     if board[y][x] != "_":
         print "Invalid move!"
         continue
 
-    board = new_state(board, "x", (x,y))
+    board = new_state(board, "x", (y,x))
     print
     print_board(board)
     
