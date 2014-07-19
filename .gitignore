@@ -15,3 +15,7 @@ cabal.config
 
 # python
 *.pyc
+
+#codejam
+*.in
+*.out
