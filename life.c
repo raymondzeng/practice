@@ -20,7 +20,7 @@ void print_arr(int *arr, int len, int height, int width) {
 }
 
 int get_index(int height, int width, int row, int col) {
-  if (row < 0 || col < 0) {
+  if (row < 0 || col < 0 || row >= height || col >= width ) {
     return -1;
   }
   return width * row + col;
@@ -67,7 +67,7 @@ int count_alive_neighbors(int *state, int len, int height, int width, int row, i
   int sum = 0;
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
-      if (i == 0 && j == 0) {
+      if (row_offset[i] == 0 && col_offset[j] == 0) {
         continue;
       }      
       int index = get_index(height, width, row + row_offset[i], col + col_offset[j]);
@@ -101,9 +101,13 @@ int main() {
     board[i] = r;
   }  
   
+  //prints board
   print_arr(board, len, height, width);
-  printf("%d\n", count_alive_neighbors(board, len, height, width, 0, 0));
+
+
+  printf("%d\n", count_alive_neighbors(board, len, height, width, 0, 3));
   //  do_life(board, len, height, width, 1);
 
   return 0;
 }
+
