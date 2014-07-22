@@ -5,13 +5,12 @@ struct stack{
   int *stack;
 };
 
-typedef struct stack my_stack;
+typedef struct stack stack;
 
-
-void stack_init(my_stack *s, int capacity);
-void stack_print(my_stack *s);
-void stack_push(my_stack *s, int e);
-int stack_size(my_stack *s);
-int stack_pop(my_stack *s);
-void stack_deallocate(my_stack *s);
+void stack_init(stack *s, int capacity);
+void stack_print(stack *s);
+void stack_push(stack *s, int e);
+int stack_size(stack *s);
+int stack_pop(stack *s);
+void stack_deallocate(stack *s);
 
