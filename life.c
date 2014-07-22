@@ -20,6 +20,9 @@ void print_arr(int *arr, int len, int height, int width) {
 }
 
 int get_index(int height, int width, int row, int col) {
+  if (row < 0 || col < 0) {
+    return -1;
+  }
   return width * row + col;
 }
 
@@ -43,7 +46,9 @@ void update(int *current_state, int *next_state, int len, int height, int width)
     int row = i / width;
     int col = i % width;
     int live_neighbours = count_alive_neighbors(current_state, len, height, width, row, col);
-    printf("%d neighbours\n", live_neighbours);                                           
+    printf("%d neighbours\n", live_neighbours);
+
+    // TODO : cases for num of live neighbors
   }
 }
 
@@ -66,14 +71,13 @@ int count_alive_neighbors(int *state, int len, int height, int width, int row, i
         continue;
       }      
       int index = get_index(height, width, row + row_offset[i], col + col_offset[j]);
-      sum +=is_alive(state, len, height, width, index);
+      sum += is_alive(state, len, height, width, index);
     }
   }  
   return sum;
 }
 
 int is_alive(int *state, int len, int height, int width, int index) {
-  printf("isalive index: %d\n", index);
   if (is_in_range(len, index)) {
     return state[index];
   }
