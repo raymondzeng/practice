@@ -7,16 +7,22 @@
 int is_alive(int *state, int len, int height, int width, int index);
 int count_alive_neighbors(int *state, int len, int height, int width, int row, int col);
 void update(int *curr, int *next, int len, int height, int width);
+void set_alive(int *state, int index);
+void set_dead(int *state, int index);
 
 void print_arr(int *arr, int len, int height, int width) {
   // print the board
   for (int i = 0; i < len; i++) {
-    printf("%2d ", arr[i]);
+    if (arr[i] == 1) {
+      printf("* ");
+    } else 
+      printf("%d ", arr[i]);
     // if end of row, put new line
     if (i % width == (width - 1)) {
       printf("\n");
     }
   }
+  printf("\n");
 }
 
 int get_index(int height, int width, int row, int col) {
@@ -32,8 +38,8 @@ void do_life(int *start_state, int len, int height, int width, int life_cycles){
   while(life_cycles--){
     int next_state[len];
     update(current_state, next_state, len, height, width);
-    print_arr(current_state, len, height, width);
     current_state = next_state;
+    print_arr(current_state, len, height, width);
   }
 }
 
@@ -46,9 +52,18 @@ void update(int *current_state, int *next_state, int len, int height, int width)
     int row = i / width;
     int col = i % width;
     int live_neighbours = count_alive_neighbors(current_state, len, height, width, row, col);
-    printf("%d neighbours\n", live_neighbours);
-
-    // TODO : cases for num of live neighbors
+    
+    if(live_neighbours == 2){
+      if(is_alive(current_state, len, height, width, i)){
+        set_alive(next_state, i);
+      }else{
+        set_dead(next_state, i);
+      }
+    }else if(live_neighbours == 3){
+      set_alive(next_state, i);
+    }else{
+      set_dead(next_state, i);
+    }
   }
 }
 
@@ -63,7 +78,6 @@ void set_dead(int *arr, int index) {
 int count_alive_neighbors(int *state, int len, int height, int width, int row, int col) {
   int row_offset[3] = {0,1,-1};
   int col_offset[3] = {0,1,-1};
-
   int sum = 0;
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
@@ -90,23 +104,19 @@ int main() {
   int len = height * width;
   int board[len];
 
-
   // init random generator
   srand(time(NULL));
 
   // init the board  
   for (int i = 0; i < len; i++) {
     // randomly pick between 0 and 1
-    int r = round(rand() % 2);
+    int r = rand() % 2;
     board[i] = r;
   }  
   
-  //prints board
+  // print init state
   print_arr(board, len, height, width);
-
-
-  printf("%d\n", count_alive_neighbors(board, len, height, width, 0, 3));
-  //  do_life(board, len, height, width, 1);
+  do_life(board, len, height, width, 1);
 
   return 0;
 }
