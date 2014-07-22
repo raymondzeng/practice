@@ -47,7 +47,7 @@ void stack_init(my_stack *s, int capacity){
 }
 
 int stack_size(my_stack *s){
-  return s->size;
+  return s->capacity;
 }
 void stack_push(my_stack *s, int e){
   s->stack[s->size] = e;
@@ -60,7 +60,9 @@ int stack_pop(my_stack *s){
 }
 
 void stack_deallocate(my_stack *s){
-  free(s);
+  free(s->stack);
+  s->stack = NULL;
+  s->size = 0;
 }
 
 void stack_print(my_stack *s){
