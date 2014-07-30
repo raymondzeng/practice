@@ -5,7 +5,7 @@ def solve(credit, prices):
     Since there is only one solution, iterate through list and check that element with every other elem in the list after that elem until you get the right sum.
     
     j is always guaranteed to be >= i
-    Runtime = ? between n and n^2
+    Runtime = n^2
     """
 
     for i, price in enumerate(prices):

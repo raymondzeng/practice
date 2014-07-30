@@ -18,23 +18,21 @@ class Solution:
         result = []
         stack = []
         
-        while (len(stack) != 0 or root is not None):
-            if root is None:
+        while(True):
+            while(root):    
+                stack.append(root)
+                root = root.left
+            
+            while(len(stack) > 0 and root == stack[-1].right):
                 root = stack.pop()
                 result.append(root.val)
-                root = None
-            else:
-                stack.append(root)
-                
-                if root.right is not None:
-                    stack.append(root.right)
-                
-                root = root.left
+            if len(stack) == 0: break
+
+            root = stack[-1].right
             
         return result
 
 s = Solution()
-t = TreeNode(2)
-t.left = TreeNode(3)
-t.left.left = TreeNode(1)
+t = TreeNode(1)
+t.right = TreeNode(2)
 print s.postorderTraversal(t)
